@@ -12,16 +12,26 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 const render = require("./lib/htmlRenderer");
 const Employees = []
 
-function createEmployees() {
-    return inquirer.prompt([
-        {
-            type: "list",
-            name: "title",
-            choices: ["Manager", "Engineer", "Intern"]
-        }
-    ]);
-}
 
+// const createTeam = ({
+//         type: "list",
+//         name: "typeemployee",
+//         message: "what type of team member are you?",
+//         choice: ["manager", "engineer", "intern", "no more to add"]
+//     })
+//     (userChoice => {
+//         switch (userChoice.typeemployee) {
+//             case "manager":
+//                 addManagerQuestions();
+//                 break;
+//             case "engineer":
+//                 addEngineerQuestions();
+//                 break;
+//             case "intern":
+//                 addInternQuestion();
+//                 break;
+//         }
+//     })
 
 
 
@@ -29,7 +39,7 @@ const ManagerQuestions = [{
         name: 'name',
         message: 'what is the employee name',
         default: 'test',
-    }, 
+    },
     {
         name: 'email',
         message: 'what is your employee email?',
@@ -44,8 +54,8 @@ const ManagerQuestions = [{
         name: 'id',
         message: 'What is the employee id number',
         default: 'test',
-    }, 
-    
+    },
+
     {
         name: "office number",
         message: 'What is the employee office number',
@@ -58,10 +68,10 @@ const ManagerQuestions = [{
 
 
 const EngineerQuestions = [{
-    name: 'name',
+        name: 'name',
         message: 'what is the employee name',
         default: 'test',
-    }, 
+    },
     {
         name: 'email',
         message: 'what is the employee email?',
@@ -76,8 +86,8 @@ const EngineerQuestions = [{
         name: 'id',
         message: 'What is the employee id number',
         default: 'test',
-    }, 
-    
+    },
+
     {
         name: "github",
         message: 'What is the employee github username',
@@ -86,10 +96,10 @@ const EngineerQuestions = [{
 ];
 
 const InternQuestions = [{
-    name: 'name',
+        name: 'name',
         message: 'what is the employee name',
         default: 'test',
-    }, 
+    },
     {
         name: 'email',
         message: 'what is the employee email?',
@@ -104,8 +114,8 @@ const InternQuestions = [{
         name: 'id',
         message: 'What is the employee id number',
         default: 'test',
-    }, 
-    
+    },
+
     {
         name: "school",
         message: 'What school is the employee going to',
@@ -114,20 +124,20 @@ const InternQuestions = [{
 ];
 
 const continueOrEnd = [{
-    type: "checkbox",
-    message: " add more employees?",
-    name : "choice",
-    choice : ["true", "false"]
-}
+        type: "checkbox",
+        message: " add more employees?",
+        name: "choice",
+        choice: ["true", "false"]
+    }
 
 ];
 
 const typeOfMember = [{
-    type: "checkbox",
-    message: "what role would you like to add",
-    name : "choice",
-    choice : ["engineer", "intern"]
-}
+        type: "checkbox",
+        message: "what role would you like to add",
+        name: "choice",
+        choice: ["engineer", "intern"]
+    }
 
 ];
 
@@ -135,13 +145,18 @@ const typeOfMember = [{
 
 
 inquirer
-    .prompt(ManagerQuestions)
+    .prompt(EngineerQuestions)
     .then(answers => {
         console.info('Answer:', answers);
         console.log(answers);
         const newManager = new Manager(answers.name, answers.id, answers.email, answers["office number"])
         Employees.push(newManager)
+        const newEngineer = new Engineer(answers.name, answers.id, answers.email, answers.github)
+        Employees.push(newEngineer)
+        const newIntern = new Intern(answers.name, answers.id, answers.email, answers.school)
+        Employees.push(newIntern)
         const html = render(Employees)
+
         fs.writeFile("temp.html", html, function (err) {
             if (err) throw err;
             console.log("wrote file")
