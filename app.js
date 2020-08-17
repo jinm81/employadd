@@ -13,26 +13,6 @@ const render = require("./lib/htmlRenderer");
 const Employees = []
 
 
-// const createTeam = ({
-//         type: "list",
-//         name: "typeemployee",
-//         message: "what type of team member are you?",
-//         choice: ["manager", "engineer", "intern", "no more to add"]
-//     })
-//     (userChoice => {
-//         switch (userChoice.typeemployee) {
-//             case "manager":
-//                 addManagerQuestions();
-//                 break;
-//             case "engineer":
-//                 addEngineerQuestions();
-//                 break;
-//             case "intern":
-//                 addInternQuestion();
-//                 break;
-//         }
-//     })
-
 
 
 const ManagerQuestions = [{
@@ -61,6 +41,13 @@ const ManagerQuestions = [{
         message: 'What is the employee office number',
         default: 'test',
     },
+    {
+        type: "checkbox",
+        message: 'What type of employee would you like to add',
+        name: "employee",
+        choices: ["engineer", "intern"]
+
+    }
 
 
 
@@ -133,28 +120,31 @@ const continueOrEnd = [{
 ];
 
 const typeOfMember = [{
-        type: "checkbox",
-        message: "what role would you like to add",
-        name: "choice",
-        choice: ["engineer", "intern"]
-    }
+    type: "checkbox",
+    message: 'What type of employee would you like to add?',
+    name: "employee1",
+    choices: ["engineer", "intern"]
+}]
 
-];
+
 
 
 
 
 inquirer
-    .prompt(EngineerQuestions)
+    .prompt(ManagerQuestions)
     .then(answers => {
         console.info('Answer:', answers);
         console.log(answers);
         const newManager = new Manager(answers.name, answers.id, answers.email, answers["office number"])
         Employees.push(newManager)
+
         const newEngineer = new Engineer(answers.name, answers.id, answers.email, answers.github)
         Employees.push(newEngineer)
+
         const newIntern = new Intern(answers.name, answers.id, answers.email, answers.school)
         Employees.push(newIntern)
+        
         const html = render(Employees)
 
         fs.writeFile("temp.html", html, function (err) {
