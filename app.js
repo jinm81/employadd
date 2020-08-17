@@ -41,16 +41,13 @@ const ManagerQuestions = [{
         message: 'What is the employee office number',
         default: 'test',
     },
-    {
-        type: "checkbox",
-        message: 'What type of employee would you like to add',
-        name: "employee",
-        choices: ["engineer", "intern"]
+    // {
+    //     type: "checkbox",
+    //     message: 'What type of employee would you like to add',
+    //     name: "employee",
+    //     choices: ["engineer", "intern","no more employees to add"]
 
-    }
-
-
-
+    // }
 ];
 
 
@@ -109,27 +106,44 @@ const InternQuestions = [{
         default: 'test',
     },
 ];
-
-const continueOrEnd = [{
-        type: "checkbox",
-        message: " add more employees?",
-        name: "choice",
-        choice: ["true", "false"]
-    }
-
-];
-
 const typeOfMember = [{
-    type: "checkbox",
+    type: "list",
     message: 'What type of employee would you like to add?',
     name: "employee1",
-    choices: ["engineer", "intern"]
+    choices: ["engineer", "intern", "no more employees to add"]
 }]
 
+function askTypeOfMember() {
+    inquirer.prompt(typeOfMember)
+        .then(listanswers => {
+            switch (listanswers.employee1) {
+                case "engineer":
+                    inquirer.prompt(EngineerQuestions)
+                        .then(engineer => {
+                            const newEngineer = new Engineer(engineer.name, engineer.id, engineer.email, engineer.github)
+                            Employees.push(newEngineer)
+                            askTypeOfMember()
+                        })
+                    break;
+                case "intern":
+                    inquirer.prompt(InternQuestions)
+                        .then(intern => {
+                            const newIntern = new Intern(intern.name, intern.id, intern.email, intern.school)
+                            Employees.push(newIntern)
+                            askTypeOfMember()
+                        })
+                    break;
+                default:
+                    const html = render(Employees)
 
+                    fs.writeFile("temp.html", html, function (err) {
+                        if (err) throw err;
+                        console.log("wrote file")
+                    })
+            }
 
-
-
+        })
+}
 
 inquirer
     .prompt(ManagerQuestions)
@@ -138,19 +152,9 @@ inquirer
         console.log(answers);
         const newManager = new Manager(answers.name, answers.id, answers.email, answers["office number"])
         Employees.push(newManager)
+        askTypeOfMember()
 
-        const newEngineer = new Engineer(answers.name, answers.id, answers.email, answers.github)
-        Employees.push(newEngineer)
 
-        const newIntern = new Intern(answers.name, answers.id, answers.email, answers.school)
-        Employees.push(newIntern)
-        
-        const html = render(Employees)
-
-        fs.writeFile("temp.html", html, function (err) {
-            if (err) throw err;
-            console.log("wrote file")
-        })
     })
 
 
